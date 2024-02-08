@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+
 public class Zpm {
 
     private static Map<String, Object> variables = new HashMap<>();
@@ -29,14 +30,19 @@ public class Zpm {
             String line;
             while ((line = reader.readLine()) != null) {
                 lineNum++;
-                interpret(line.trim());
+                interpret(line.trim(), lineNum);
             }
-        } catch (IOException e) {
-            System.err.println("Runtime Error: Line " + lineNum);
+        } catch (IOException | RuntimeException e) {
+            if (e instanceof IOException) {
+                System.err.println("Syntax Error: Line " + lineNum);
+            } else {
+                System.err.println("Runtime Error: Line " + lineNum);
+            }
+            return;
         }
     }
 
-    private static void interpret(String line) {
+    private static void interpret(String line, int lineNum) throws Exception{
         if (line.isEmpty()) {
             return;
         }
@@ -45,23 +51,21 @@ public class Zpm {
 
         if (parts.length < 3 || (!parts[parts.length - 1].equals(";")
             && !parts[parts.length - 1].equals("ENDFOR"))) {
-            System.err.println("Syntax Error " + line);
-            return;
+            throw new IOException();
         }
-
         switch(parts[0]) {
             case "PRINT":
-                printVariables(parts[1]);
+                printVariables(parts[1], lineNum);
                 break;
             case "FOR":
-                forLoop(parts);
+                forLoop(parts, lineNum);
                 break;
             default:
-                assignment(parts);
+                assignment(parts, lineNum);
         }
     }
 
-    private static void assignment(String[] parts) {
+    private static void assignment(String[] parts, int lineNum) throws Exception{
         String variable = parts[0];
         String operation = parts[1];
         String value = parts[2];
@@ -71,8 +75,7 @@ public class Zpm {
         } else {
             Object currentValue = variables.get(variable);
             if (currentValue == null) {
-                System.err.println("Runtime error: " + variable + " not assigned");
-                return;
+                throw new RuntimeException();
             }
             switch (operation) {
                 case "+=":
@@ -81,30 +84,30 @@ public class Zpm {
                     } else if (currentValue instanceof Integer && parseValue(value) instanceof Integer) {
                         variables.put(variable, (Integer) currentValue + (Integer) parseValue(value));
                     } else {
-                        System.err.println("Runtime error: Invalid operation (+=)");
+                        throw new RuntimeException();
                     }
                     break;
                 case "*=":
                     if (currentValue instanceof Integer && parseValue(value) instanceof Integer) {
                         variables.put(variable, (Integer) currentValue * (Integer) parseValue(value));
                     } else {
-                        System.err.println("Runtime error: Invalid operation");
+                        throw new RuntimeException();
                     }
                     break;
                 case "-=":
                     if (currentValue instanceof Integer && parseValue(value) instanceof Integer) {
                         variables.put(variable, (Integer) currentValue - (Integer) parseValue(value));
                     } else {
-                        System.err.println("Runtime error: Invalid operation");
+                        throw new RuntimeException();
                     }
                     break;
                 default:
-                    System.err.println("Syntax error: " + parts[1]);
+                    throw new IOException();
             }
         }
     }
 
-    private static void forLoop(String[] parts) {
+    private static void forLoop(String[] parts, int lineNum) throws Exception{
         int numLoops = Integer.parseInt(parts[1]);
         
         for (int i = 0; i < numLoops; i++) {
@@ -113,7 +116,7 @@ public class Zpm {
             for (int j = 2; j < parts.length; j++) {
                 if (parts[j].equals(";")) {
                     statement.append(" ;");
-                    interpret(statement.toString().trim());
+                    interpret(statement.toString().trim(), lineNum);
                     statement.setLength(0);
                 } else if (parts[j].equals("ENDFOR")) {
                     break;
@@ -124,14 +127,14 @@ public class Zpm {
         }
         
         if (!parts[parts.length - 1].equals("ENDFOR")) {
-            System.err.println("Syntax error: Missing ENDFOR");
+            throw new IOException();
         }
     }
 
-    private static void printVariables(String variable) {
+    private static void printVariables(String variable, int lineNum) throws Exception{
         Object value = variables.get(variable);
         if (value == null) {
-            System.err.println("Runtime error: Variable " + variable + " not initialized");
+            throw new RuntimeException();
         } else {
             System.out.println(variable + "=" + value);
         }
@@ -145,7 +148,11 @@ public class Zpm {
                 if (value.startsWith("\"") && value.endsWith("\"") && value.length() >= 2) {
                     return value.substring(1, value.length() - 1);
                 } else {
-                    return Integer.parseInt(variables.get(value).toString());
+                    if (isNumeric(variables.get(value).toString())) {
+                        return Integer.parseInt(variables.get(value).toString());
+                    } else {
+                        return variables.get(value).toString();
+                    }
                 }
             }
         } catch (NumberFormatException e) {

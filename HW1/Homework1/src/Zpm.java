@@ -1,22 +1,27 @@
 /**
- * Copyright 2024 Max Dupler
+ * This class represents a Zpm interpreter.
+ * 
  * Portions of this code were adapted with assistance from the OpenAI GPT-3 model. All rights reserved.
- * Specific portions assisted by ChatGPT inlude:
- *      Comment generation
- *      Assistance with errors in the assignment and forLoop methods
+ * Specific portions assisted by ChatGPT include:
+ *   - Comment generation
+ *   - Assistance with errors in the assignment and forLoop methods
  */
-
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
 public class Zpm {
 
+    // Map to store variables and their values
     private static Map<String, Object> variables = new HashMap<>();
+
+    /**
+     * Main method to run the Zpm interpreter.
+     * 
+     * @param args Command-line arguments containing the filename to interpret.
+     */
     public static void main(String[] args) throws Exception {
         if (args.length < 1) {
             System.out.println("Usage: java Zpm <filename.zpm>");
@@ -28,11 +33,13 @@ public class Zpm {
 
         try(BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
+            // Read each line from the file and interpret it
             while ((line = reader.readLine()) != null) {
                 lineNum++;
                 interpret(line.trim(), lineNum);
             }
         } catch (IOException | RuntimeException e) {
+            // Handle IOException and RuntimeException
             if (e instanceof IOException) {
                 System.err.println("Syntax Error: Line " + lineNum);
             } else {
@@ -42,15 +49,20 @@ public class Zpm {
         }
     }
 
-    private static void interpret(String line, int lineNum) throws Exception{
+    /**
+     * Interpret a line of Zpm code.
+     * 
+     * @param line The line of Zpm code to interpret.
+     * @param lineNum The line number being interpreted.
+     */
+    private static void interpret(String line, int lineNum) throws Exception {
         if (line.isEmpty()) {
             return;
         }
 
         String[] parts = line.split("\\s+");
-
-        if (parts.length < 3 || (!parts[parts.length - 1].equals(";")
-            && !parts[parts.length - 1].equals("ENDFOR"))) {
+        // Check for syntax errors
+        if (parts.length < 3 || (!parts[parts.length - 1].equals(";") && !parts[parts.length - 1].equals("ENDFOR"))) {
             throw new IOException();
         }
         switch(parts[0]) {
@@ -65,7 +77,13 @@ public class Zpm {
         }
     }
 
-    private static void assignment(String[] parts, int lineNum) throws Exception{
+    /**
+     * Perform an assignment operation.
+     * 
+     * @param parts The parts of the assignment operation.
+     * @param lineNum The line number being interpreted.
+     */
+    private static void assignment(String[] parts, int lineNum) throws Exception {
         String variable = parts[0];
         String operation = parts[1];
         String value = parts[2];
@@ -107,7 +125,13 @@ public class Zpm {
         }
     }
 
-    private static void forLoop(String[] parts, int lineNum) throws Exception{
+    /**
+     * Perform a for loop operation.
+     * 
+     * @param parts The parts of the for loop operation.
+     * @param lineNum The line number being interpreted.
+     */
+    private static void forLoop(String[] parts, int lineNum) throws Exception {
         int numLoops = Integer.parseInt(parts[1]);
         
         for (int i = 0; i < numLoops; i++) {
@@ -131,7 +155,13 @@ public class Zpm {
         }
     }
 
-    private static void printVariables(String variable, int lineNum) throws Exception{
+    /**
+     * Print the value of a variable.
+     * 
+     * @param variable The name of the variable to print.
+     * @param lineNum The line number being interpreted.
+     */
+    private static void printVariables(String variable, int lineNum) throws Exception {
         Object value = variables.get(variable);
         if (value == null) {
             throw new RuntimeException();
@@ -140,6 +170,12 @@ public class Zpm {
         }
     }
 
+    /**
+     * Parse the value of a variable.
+     * 
+     * @param value The value to parse.
+     * @return The parsed value.
+     */
     private static Object parseValue(String value) {
         try {
             if (isNumeric(value)) {
@@ -160,6 +196,12 @@ public class Zpm {
         }
     }
 
+    /**
+     * Check if a string is numeric.
+     * 
+     * @param str The string to check.
+     * @return True if the string is numeric, false otherwise.
+     */
     private static boolean isNumeric(String str) {
         // Check if each character in the string is a digit
         for (char c : str.toCharArray()) {

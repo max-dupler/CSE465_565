@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Zpm prog1.zpm",
+            "request": "launch",
+            "mainClass": "Zpm",
+            "projectName": "Homework1_4d6bdabe",
+            "args": ["src/prog1.zpm"]
+        },
+        {
+            "type": "java",
+            "name": "Zpm prog2.zpm",
+            "request": "launch",
+            "mainClass": "Zpm",
+            "projectName": "Homework1_4d6bdabe",
+            "args": ["src/prog2.zpm"]
+        }
+    ]
+}

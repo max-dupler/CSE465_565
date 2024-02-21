@@ -40,13 +40,7 @@
 ; ================ Solve the following functions ===================
 ; Return a list with only the negatives items
 (define (negatives lst)
-    (if (null? lst)
-        '()
-        (if (negative? (car lst))
-            (cons (car lst) (negatives (cdr lst)))
-            (negatives (cdr lst))
-        )
-    )             
+	lst
 )
 
 (line "negatives")

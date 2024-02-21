@@ -46,7 +46,16 @@
 ; Returns true if the two lists have identical structure
 ; in terms of how many elements and nested lists they have in the same order
 (define (struct lst1 lst2)
-	#t
+  (cond
+    ((and (null? lst1) (null? lst2)) #t) ; if both lists are empty
+    ((or (null? lst1) (null? lst2)) #f) ; if one list is empty and the other isn't
+    ((and (list? (car lst1)) (list? (car lst2))) ; if the first element of both lists are lists, check the nested list structures
+     (and (struct (car lst1) (car lst2))
+          (struct (cdr lst1) (cdr lst2))))
+    ((and (not (list? (car lst1))) (not (list? (car lst2)))) ; if the first elements aren't lists, check the remaining elements
+     (struct (cdr lst1) (cdr lst2)))
+    (else #f)
+    )
 )
 
 (line "struct")

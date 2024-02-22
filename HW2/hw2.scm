@@ -148,7 +148,11 @@
 ; from the 'zipcodes.scm' file for this. You can just call 'zipcodes' directly
 ; as shown in the sample example
 (define (getLatLon zipcode zips)
-	(list zipcode (car zips))
+  ;(list zipcode (car zips))
+  (cond ((null? zips) '()) ; if zip code isn't found
+        ((= zipcode (caar zips)) (cddddr(car zips))) 
+        (else (getLatLon zipcode (cdr zips)))
+  )
 )
 
 (line "getLatLon")

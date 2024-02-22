@@ -27,10 +27,10 @@
 ; Return a list with only the negatives items
 (define (negatives lst)
   (if (null? lst)
-        '()
-        (if (negative? (car lst))
-            (cons (car lst) (negatives (cdr lst)))
-            (negatives (cdr lst))
+        '() ; base case
+        (if (negative? (car lst)) 
+            (cons (car lst) (negatives (cdr lst))) ; add to list recursively if the first element is negative
+            (negatives (cdr lst)) ; else, recursively continue evaluating each element
         )
     )
 )
@@ -69,16 +69,27 @@
 ; in the list and the second is the largest in the list. 
 ; lst -- contains numeric values, and length is >= 1.
 (define (minAndMax lst)
-  #t
-      
+  (if (null? lst)
+      '() ; base case
+      (list (minelt lst) (maxelt lst))
+  )
 )
 
-; helper methods for minAndMax
-(define (min a b)
-  (if (< a b) a b))
 
-(define (max a b)
-  (if (> a b) a b))
+; helper methods for minAndMax
+(define (maxelt lst)
+  (if (= (length lst) 1)
+      (car lst)
+      (max (car lst) (maxelt (cdr lst)))
+  )
+)
+
+(define (minelt lst)
+  (if (= (length lst) 1)
+      (car lst)
+      (min (car lst) (minelt (cdr lst)))
+  )
+)
 
 (line "minAndMax")
 (mydisplay (minAndMax '(1 2 -3 4 2)))  ; -> (-3 4)
@@ -93,7 +104,7 @@
 	(cond
           ((null? lst) '()) ; base case
           ((not (list? lst)) (list lst)) ; if first element isn't list
-          (else (append (flatten (car lst)) (flatten (cdr lst))))
+          (else (append (flatten (car lst)) (flatten (cdr lst)))) ; recursively flatten nested lists
         )
 )
 
@@ -112,7 +123,7 @@
 (define (crossproduct lst1 lst2)
   (if (or (null? lst1) (null? lst2))
       '() ; base case
-      (append (makepair (car lst1) lst2) (crossproduct (cdr lst1) lst2)))
+      (append (makepair (car lst1) lst2) (crossproduct (cdr lst1) lst2))) ; recursively create pairs for each element of lst1
 )
 
 ; helper for crossproduct

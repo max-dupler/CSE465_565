@@ -69,8 +69,16 @@
 ; in the list and the second is the largest in the list. 
 ; lst -- contains numeric values, and length is >= 1.
 (define (minAndMax lst)
-	'()
+  #t
+      
 )
+
+; helper methods for minAndMax
+(define (min a b)
+  (if (< a b) a b))
+
+(define (max a b)
+  (if (> a b) a b))
 
 (line "minAndMax")
 (mydisplay (minAndMax '(1 2 -3 4 2)))  ; -> (-3 4)
@@ -82,7 +90,11 @@
 ; that are inside nested loops taken out. So we want to flatten all elements and have
 ; them all in a single list. For example '(a (a a) a))) should become (a a a a)
 (define (flatten lst)
-	'()
+	(cond
+          ((null? lst) '()) ; base case
+          ((not (list? lst)) (list lst)) ; if first element isn't list
+          (else (append (flatten (car lst)) (flatten (cdr lst))))
+        )
 )
 
 (line "flatten")
@@ -98,8 +110,19 @@
 ; ((1 a) (1 b) (1 c) (2 a) (2 b) (2 c))
 ; lst1 & lst2 -- two flat lists.
 (define (crossproduct lst1 lst2)
-	'()
+  (if (or (null? lst1) (null? lst2))
+      '() ; base case
+      (append (makepair (car lst1) lst2) (crossproduct (cdr lst1) lst2)))
 )
+
+; helper for crossproduct
+; creates a pairs with num and each element of lst
+(define (makepair num lst)
+  (if (null? lst)
+      '() ; base case if list is null
+      (cons (list num (car lst)) (makepair num (cdr lst)))) ; recursively create pairs with num and each element of lst
+)
+  
 
 (line "crossproduct")
 (mydisplay (crossproduct '(1 2) '(a b c)))

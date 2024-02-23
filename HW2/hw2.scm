@@ -173,7 +173,27 @@
 ; placeName -- is the text corresponding to the name of the place
 ; zips -- the zipcode DB
 (define (getCommonPlaces state1 state2 zips)
- 0
+  ; find all places for a state
+  (define (getallstateplaces state zips)
+    (cond
+    ((null? zips) '()) ; Base case: Empty list
+    ((equal? state (caddr (car zips))) ; Check if state matches
+     (cons (cadr (car zips)) (getallstateplaces state (cdr zips)))) ; Add place if state matches
+    (else (getallstateplaces state (cdr zips)))) ; Move to the next element in the list
+  )
+
+  (define state1places (getallstateplaces state1 zips))
+  (define state2places (getallstateplaces state2 zips))
+
+  (define (findcommonplaces places1 places2)
+    (cond
+      ((null? places1) '()) ; Base case
+      ((member (car places1) places2)
+       (cons (car places1) (findcommonplaces (cdr places1) places2)))
+      (else (findcommonplaces (cdr places1) places2)))
+  )
+
+  (findcommonplaces state1places state2places)
 )
 
 (line "getCommonPlaces")

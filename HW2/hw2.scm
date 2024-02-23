@@ -3,6 +3,16 @@
 ; DO NOT REMOVE OR CHANGE ANYTHING UNTIL LINE 40
 ; ---------------------------------------------
 
+; Some of this code is generated with assistance from ChatGPT, an AI language model developed by OpenAI.
+
+; Copyright 2024 OpenAI
+
+; This content/code is generated with assistance from ChatGPT and is subject to the terms of the OpenAI API License Agreement.
+
+; Specific parts where ChatGPT assistance was used to fix code and generate code
+; Help with zipCount method
+; Help with getCommonPlaces
+
 ; zipcodes.scm contains all the US zipcodes.
 ; This file must be in the same folder as hw2.scm file.
 ; You should not modify this file. Your code
@@ -148,7 +158,6 @@
 ; from the 'zipcodes.scm' file for this. You can just call 'zipcodes' directly
 ; as shown in the sample example
 (define (getLatLon zipcode zips)
-  ;(list zipcode (car zips))
   (cond ((null? zips) '()) ; if zip code isn't found
         ((= zipcode (caar zips)) (cddddr(car zips))) 
         (else (getLatLon zipcode (cdr zips)))
@@ -164,7 +173,7 @@
 ; placeName -- is the text corresponding to the name of the place
 ; zips -- the zipcode DB
 (define (getCommonPlaces state1 state2 zips)
-	(list state1 state2)
+ 0
 )
 
 (line "getCommonPlaces")
@@ -191,7 +200,13 @@
 ; state -- state
 ; zips -- zipcode DB
 (define (zipCount state zips)
-	0
+	(if (null? zips)
+            0
+            (if (equal? state (caddar zips))
+                (+ (zipCount state (cdr zips)) 1)
+                (zipCount state (cdr zips))
+            )
+        )
 )
 
 (line "zipCount")
@@ -226,10 +241,18 @@
 ; lst -- flat list of items
 ; filters -- list of predicates to apply to the individual elements
 
-(define (filterList lst filters)
-	lst
+(define (oneFilter lst condition)
+  (cond
+    ((null? lst) '())
+    ((condition (car lst)) (cons (car lst) (oneFilter (cdr lst) condition)))
+    (else (oneFilter (cdr lst) condition)))
 )
 
+(define (filterList lst filters)
+  (if (null? filters)
+      lst
+      (filterList (oneFilter lst (car filters)) (cdr filters)))
+)
 (line "filterList")
 (mydisplay (filterList '(1 2 3 11 22 33 -1 -2 -3 -11 -22 -33) (list POS?)))
 (mydisplay (filterList '(1 2 3 11 22 33 -1 -2 -3 -11 -22 -33) (list POS? even?)))

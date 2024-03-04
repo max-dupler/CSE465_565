@@ -134,7 +134,7 @@ public class Zpm {
             }
             switch (operation) {
                 case "+=":
-                    if (currentValue instanceof String || parseValue(value) instanceof String) {
+                    if (currentValue instanceof String && parseValue(value) instanceof String) {
                         variables.put(variable, String.valueOf(currentValue) + String.valueOf(parseValue(value)));
                     } else if (currentValue instanceof Integer && parseValue(value) instanceof Integer) {
                         variables.put(variable, (Integer) currentValue + (Integer) parseValue(value));

@@ -9,7 +9,7 @@
         },
         {
             "type": "java",
-            "name": "Zpm prog1.zpm",
+            "name": "prog1.zpm",
             "request": "launch",
             "mainClass": "Zpm",
             "projectName": "Homework1_4d6bdabe",
@@ -17,11 +17,51 @@
         },
         {
             "type": "java",
-            "name": "Zpm prog2.zpm",
+            "name": "prog2.zpm",
             "request": "launch",
             "mainClass": "Zpm",
             "projectName": "Homework1_4d6bdabe",
             "args": ["src/prog2.zpm"]
+        },
+        {
+            "type": "java",
+            "name": "prog.zpm",
+            "request": "launch",
+            "mainClass": "Zpm",
+            "projectName": "Homework1_4d6bdabe",
+            "args": ["src/prog.zpm"]
+        },
+        {
+            "type": "java",
+            "name": "prog3.zpm",
+            "request": "launch",
+            "mainClass": "Zpm",
+            "projectName": "Homework1_4d6bdabe",
+            "args": ["src/prog3.zpm"]
+        },
+        {
+            "type": "java",
+            "name": "prog4.zpm",
+            "request": "launch",
+            "mainClass": "Zpm",
+            "projectName": "Homework1_4d6bdabe",
+            "args": ["src/prog4.zpm"]
+        },
+        {
+            "type": "java",
+            "name": "myprog1.zpm",
+            "request": "launch",
+            "mainClass": "Zpm",
+            "projectName": "Homework1_4d6bdabe",
+            "args": ["src/myprog1.zpm"]
+        },
+        {
+            "type": "java",
+            "name": "myprog2.zpm",
+            "request": "launch",
+            "mainClass": "Zpm",
+            "projectName": "Homework1_4d6bdabe",
+            "args": ["src/myprog2.zpm"]
         }
     ]
 }

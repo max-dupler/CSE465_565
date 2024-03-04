@@ -216,26 +216,6 @@ public class Zpm {
      * @param value The value to parse.
      * @return The parsed value.
      */
-    // private static Object parseValue(String value) {
-    //     try {
-    //         if (isNumeric(value)) {
-    //             return Integer.parseInt(value);
-    //         } else {
-    //             if (value.startsWith("\"") && value.endsWith("\"") && value.length() >= 2) {
-    //                 return value.substring(1, value.length() - 1);
-    //             } else {
-    //                 if (isNumeric(variables.get(value).toString())) {
-    //                     return Integer.parseInt(variables.get(value).toString());
-    //                 } else {
-    //                     return variables.get(value).toString();
-    //                 }
-    //             }
-    //         }
-    //     } catch (NumberFormatException e) {
-    //         return value;
-    //     }
-    // }
-
     private static Object parseValue(String value) {
         try {
             if (isNumeric(value) || value.charAt(0) == '-') {

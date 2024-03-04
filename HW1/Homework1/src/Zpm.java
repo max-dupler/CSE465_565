@@ -9,7 +9,9 @@
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Zpm {
@@ -49,6 +51,33 @@ public class Zpm {
         }
     }
 
+    private static String[] tokenize(String line) {
+        List<String> tokens = new ArrayList<>();
+        StringBuilder currentToken = new StringBuilder();
+        boolean withinQuotes = false;
+    
+        for (char c : line.toCharArray()) {
+            if (c == '"') {
+                withinQuotes = !withinQuotes;
+            }
+    
+            if (Character.isWhitespace(c) && !withinQuotes) {
+                if (currentToken.length() > 0) {
+                    tokens.add(currentToken.toString());
+                    currentToken.setLength(0);
+                }
+            } else {
+                currentToken.append(c);
+            }
+        }
+    
+        if (currentToken.length() > 0) {
+            tokens.add(currentToken.toString());
+        }
+    
+        return tokens.toArray(new String[0]);
+    }
+
     /**
      * Interpret a line of Zpm code.
      * 
@@ -60,9 +89,10 @@ public class Zpm {
             return;
         }
 
-        String[] parts = line.split("\\s+");
+        String[] parts = tokenize(line);
         // Check for syntax errors
-        if (parts.length < 3 || (!parts[parts.length - 1].equals(";") && !parts[parts.length - 1].equals("ENDFOR"))) {
+        if (parts.length < 3 || (!parts[parts.length - 1].equals(";") 
+            && !parts[parts.length - 1].equals("ENDFOR"))) {
             throw new IOException();
         }
         switch(parts[0]) {
@@ -83,7 +113,8 @@ public class Zpm {
      * @param parts The parts of the assignment operation.
      * @param lineNum The line number being interpreted.
      */
-    private static void assignment(String[] parts, int lineNum) throws Exception {
+    private static void assignment(String[] parts, int lineNum) 
+        throws Exception {
         String variable = parts[0];
         String operation = parts[1];
         String value = parts[2];
@@ -98,7 +129,7 @@ public class Zpm {
             switch (operation) {
                 case "+=":
                     if (currentValue instanceof String && parseValue(value) instanceof String) {
-                        variables.put(variable, (String) currentValue + (String) parseValue(value));
+                        variables.put(variable, currentValue.toString() + parseValue(value).toString());
                     } else if (currentValue instanceof Integer && parseValue(value) instanceof Integer) {
                         variables.put(variable, (Integer) currentValue + (Integer) parseValue(value));
                     } else {

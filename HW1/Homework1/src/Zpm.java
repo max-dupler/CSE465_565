@@ -51,6 +51,13 @@ public class Zpm {
         }
     }
 
+    /**
+     * Tokenizes a string into individual tokens based on whitespace,
+     * preserving substrings within quotes as single tokens.
+     *
+     * @param line The string to be tokenized.
+     * @return An array of tokens extracted from the input string.
+     */
     private static String[] tokenize(String line) {
         List<String> tokens = new ArrayList<>();
         StringBuilder currentToken = new StringBuilder();
@@ -113,12 +120,11 @@ public class Zpm {
      * @param parts The parts of the assignment operation.
      * @param lineNum The line number being interpreted.
      */
-    private static void assignment(String[] parts, int lineNum) 
-        throws Exception {
+    private static void assignment(String[] parts, int lineNum) throws Exception {
         String variable = parts[0];
         String operation = parts[1];
         String value = parts[2];
-
+    
         if (operation.equals("=")) {
             variables.put(variable, parseValue(value));
         } else {
@@ -128,17 +134,10 @@ public class Zpm {
             }
             switch (operation) {
                 case "+=":
-                    if (currentValue instanceof String && parseValue(value) instanceof String) {
-                        variables.put(variable, currentValue.toString() + parseValue(value).toString());
+                    if (currentValue instanceof String || parseValue(value) instanceof String) {
+                        variables.put(variable, String.valueOf(currentValue) + String.valueOf(parseValue(value)));
                     } else if (currentValue instanceof Integer && parseValue(value) instanceof Integer) {
                         variables.put(variable, (Integer) currentValue + (Integer) parseValue(value));
-                    } else {
-                        throw new RuntimeException();
-                    }
-                    break;
-                case "*=":
-                    if (currentValue instanceof Integer && parseValue(value) instanceof Integer) {
-                        variables.put(variable, (Integer) currentValue * (Integer) parseValue(value));
                     } else {
                         throw new RuntimeException();
                     }
@@ -150,11 +149,21 @@ public class Zpm {
                         throw new RuntimeException();
                     }
                     break;
+                case "*=":
+                    Object parsedValue = parseValue(value);
+                    if (currentValue instanceof Integer && parsedValue instanceof Integer) {
+                        variables.put(variable, (Integer) currentValue * (Integer) parsedValue);
+                    } else {
+                        throw new RuntimeException();
+                    }
+                    break;
                 default:
                     throw new IOException();
             }
         }
     }
+    
+    
 
     /**
      * Perform a for loop operation.
@@ -207,25 +216,50 @@ public class Zpm {
      * @param value The value to parse.
      * @return The parsed value.
      */
+    // private static Object parseValue(String value) {
+    //     try {
+    //         if (isNumeric(value)) {
+    //             return Integer.parseInt(value);
+    //         } else {
+    //             if (value.startsWith("\"") && value.endsWith("\"") && value.length() >= 2) {
+    //                 return value.substring(1, value.length() - 1);
+    //             } else {
+    //                 if (isNumeric(variables.get(value).toString())) {
+    //                     return Integer.parseInt(variables.get(value).toString());
+    //                 } else {
+    //                     return variables.get(value).toString();
+    //                 }
+    //             }
+    //         }
+    //     } catch (NumberFormatException e) {
+    //         return value;
+    //     }
+    // }
+
     private static Object parseValue(String value) {
         try {
-            if (isNumeric(value)) {
+            if (isNumeric(value) || value.charAt(0) == '-') {
                 return Integer.parseInt(value);
             } else {
                 if (value.startsWith("\"") && value.endsWith("\"") && value.length() >= 2) {
                     return value.substring(1, value.length() - 1);
                 } else {
-                    if (isNumeric(variables.get(value).toString())) {
-                        return Integer.parseInt(variables.get(value).toString());
-                    } else {
-                        return variables.get(value).toString();
+                    if (variables.containsKey(value)) {
+                        Object varValue = variables.get(value);
+                        if (varValue instanceof Integer) {
+                            return varValue;
+                        } else if (varValue instanceof String) {
+                            return varValue;
+                        }
                     }
                 }
             }
         } catch (NumberFormatException e) {
             return value;
         }
+        return value; // return as is if not handled otherwise
     }
+    
 
     /**
      * Check if a string is numeric.

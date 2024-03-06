@@ -1,10 +1,12 @@
 % hw3.pl
-% ADD YOUR NAME HERE
+% Max Dupler
 
 % ------------------------------------------------
 % #1 (Undergraduate/Graduate) (5/5 pts)
 % Determine the Maximum of two int numbers
 % maxnums(A, B, MAX).
+maxnums(A, B, MAX) :- A > B, MAX is A.
+maxnums(A, B, MAX) :- A =< B, MAX is B.
 
 
 % maxnums(-12, 12, MAX). -> MAX = 12
@@ -14,6 +16,8 @@
 % #2 (Undergraduate/Graduate) (5/5 pts)
 % Determine the summation of a list of integer numbers
 % sum(LST, SUM).
+% sum([], Sum).
+% sum([H|T], Sum) :- Sum is (H + sum([T], Sum)).
 
 
 % sum([1, 2, 3, 4], SUM). -> SUM = 10

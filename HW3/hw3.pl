@@ -56,8 +56,7 @@ max([H|T], Max) :- max(T, Max), maxnums(H, Max, Maxnum), Max is Maxnum.
 % Determine whether the given integer number does exist in the given 
 % list of integer numbers
 % elementExist(E, LST).
-element(E, [E]).
-element(E, [H|T]) :- element(E, T), H = E.
+elementExist(E, [H|_]) :- E=H.
 
 
 % elementExist(1, [1, 2, 3]). -> true.

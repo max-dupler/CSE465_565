@@ -30,7 +30,8 @@ sum([H|T], Sum) :- sum(T, TailSum), Sum is H + TailSum.
 %    as part of your solution.
 % ** You can always assume that the given LST is not empty. 
 % max(LST, MAX).
-
+max([Max], Max).
+max([H|T], Max) :- max(T, Max), maxnums(H, Max, Maxnum), Max is Maxnum.
 
 % max([-5, -5, -5], MAX). -> MAX = -5
 % max([1], MAX). -> MAX = 1
@@ -55,6 +56,8 @@ sum([H|T], Sum) :- sum(T, TailSum), Sum is H + TailSum.
 % Determine whether the given integer number does exist in the given 
 % list of integer numbers
 % elementExist(E, LST).
+element(E, [E]).
+element(E, [H|T]) :- element(E, T), H = E.
 
 
 % elementExist(1, [1, 2, 3]). -> true.

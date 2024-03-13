@@ -43,7 +43,7 @@ max([H|T], Max) :- max(T, Max), maxnums(H, Max, Maxnum), Max is Maxnum.
 % ** You MUST use/call your sum predicate that you defined in #2
 %    as part of your solution.
 % ** You can always assume that the given LST is not empty. 
-% partitionable(LST).
+partitionable(LST) :- append(L1, L2, LST), sum(L1, Sum1), sum(L2, Sum2), Sum1 = Sum2.
 
  
 % partitionable([1, 2, 3, 4, 10]). -> true. because [10, 10]

@@ -77,6 +77,9 @@ reverse([H|T], ReversedList) :- reverse(T, ReversedTail), append(ReversedTail, [
 % #7 (Undergraduate/Graduate) (5/5 pts)
 % Determine the list of integer numbers that are only one digit numbers
 % collectOneDigits(LST, NEWLST). 
+collectOneDigits([], []).
+collectOneDigits([H|T], NEWLST) :- collectOneDigits(T, TailList), H >= -9, H =< 9, append([H], TailList, NEWLST).
+collectOneDigits([_|T], TailList) :- collectOneDigits(T, TailList).
 
 
 % collectOneDigits([10, 90, -20], NEWLST). -> NEWLST = []

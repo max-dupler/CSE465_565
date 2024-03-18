@@ -93,7 +93,9 @@ collectOneDigits([_|T], TailList) :- collectOneDigits(T, TailList).
 % Example: for getting all the Zipcodes and Sates you can do 
 %         location(Z, _, S, _, _, _). 
 % Determine all places based on given state and zipcode.
-% getStateInfo(PLACE, STATE< ZIPCODE).
+:- consult('zipcodes.pl').
+getStateInfo(PLACE, STATE, ZIPCODE) :- location(ZIPCODE, PLACE, STATE, _, _, _).
+
 
 
 % getStateInfo('Oxford', State, 45056). -> State = 'OH'

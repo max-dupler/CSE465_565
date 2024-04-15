@@ -15,62 +15,56 @@
 
 
 using System;
+using System.IO;
+using System.Collections.Generic;
+using zipCodeList = System.Collections.Generic.List<Zipcode>;
+using System.Linq;
 
 public class Zipcode
 {
-    public int RecordNumber { get; set; }
-    public int ZipcodeValue { get; set; }
-    public string ZipCodeType { get; set; }
+    public int ZipcodeValue{ get; set; }
     public string City { get; set; }
     public string State { get; set; }
-    public string LocationType { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
-    public double XAxis { get; set; }
-    public double YAxis { get; set; }
-    public double ZAxis { get; set; }
-    public string WorldRegion { get; set; }
-    public string Country { get; set; }
-    public string LocationText { get; set; }
-    public string Location { get; set; }
-    public bool Decommissioned { get; set; }
-    public int TaxReturnsFiled { get; set; }
-    public int EstimatedPopulation { get; set; }
-    public int TotalWages { get; set; }
-    public string Notes { get; set; }
 
     // Constructor
     public Zipcode(string zipcodeInfo)
     {
-        string[] parts = zipcodeInfo.Split('\t'); // Assuming tab-separated values
+        string[] parts = zipcodeInfo.Split('\t'); 
 
-        // Populate properties from parts array
-        RecordNumber = int.Parse(parts[0]);
         ZipcodeValue = int.Parse(parts[1]);
-        ZipCodeType = parts[2];
         City = parts[3];
         State = parts[4];
-        LocationType = parts[5];
         Latitude = double.Parse(parts[6]);
         Longitude = double.Parse(parts[7]);
-        XAxis = double.Parse(parts[8]);
-        YAxis = double.Parse(parts[9]);
-        ZAxis = double.Parse(parts[10]);
-        WorldRegion = parts[11];
-        Country = parts[12];
-        LocationText = parts[13];
-        Location = parts[14];
-        Decommissioned = bool.Parse(parts[15]);
-        TaxReturnsFiled = int.Parse(parts[16]);
-        EstimatedPopulation = int.Parse(parts[17]);
-        TotalWages = int.Parse(parts[18]);
-        Notes = parts[19];
     }
+
+    public override string ToString()
+    {
+        return $"Zipcode: {ZipcodeValue}, City: {City}, State: {State}, " +
+        "Latitude: {Latitude}, Longitude: {Longitude}";
+    }
+
 }
 
 
 public class Hw4
 {
+    public static void parseCodes(ref zipCodeList codes) 
+    {
+        var lines = File.ReadAllLines("zipcodes.txt"); 
+        foreach(string line in lines) {
+          try
+          {
+              codes.Add(new Zipcode(line));
+          }
+          catch (FormatException)
+          {
+              continue;
+          }
+        }
+    }
     public static void Main(string[] args)
     {
         // Capture the start time
@@ -81,15 +75,10 @@ public class Hw4
         // Main method
         // ============================
 
-
-
-
-
-        // TODO: your code goes here
-
-
-
-
+        zipCodeList codes = new zipCodeList();
+        parseCodes(ref codes);
+        Console.WriteLine(codes[2].ToString());
+        Console.WriteLine(codes.Count);
         
 
         // ============================

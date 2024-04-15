@@ -20,8 +20,6 @@
     * comment generation
   */
 
-
-
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -56,10 +54,11 @@ public class Zipcode
 
 }
 
-
 public class Hw4
 {
     public delegate void WriteToFileFunc(string fileName, IEnumerable<string> data);
+
+    // Parses the zip codes from a file and populates the provided list
     public static void parseCodes(ref zipCodeList codes) 
     {
         var lines = File.ReadAllLines("zipcodes.txt"); 
@@ -75,13 +74,10 @@ public class Hw4
         }
     }
 
+    // Finds common cities that appear in all states and writes them to a file
     public static void commonCities(zipCodeList codes)
     {
         var states = File.ReadAllLines("states.txt");
-        foreach (var state in states) 
-        {
-          Console.WriteLine(state);
-        }
         var cityGroups = codes.GroupBy(z => z.City);
 
         var commonCityNames = new List<string>();
@@ -102,6 +98,7 @@ public class Hw4
         WriteToFile("CommonCityNames.txt", commonCityNames);
     }
 
+    // Writes the states corresponding to each city listed in cities.txt to a file
     public static void CityStates(zipCodeList codes)
     {
         var cities = File.ReadAllLines("cities.txt").ToList();
@@ -110,7 +107,6 @@ public class Hw4
         {
             foreach (var city in cities)
             {
-                Console.WriteLine(city);
                 var states = codes
                     .Where(z => z.City == city)
                     .Select(z => z.State)
@@ -118,15 +114,11 @@ public class Hw4
                     .OrderBy(s => s);
 
                 writer.WriteLine(string.Join(" ", states));
-
-                foreach (var state in states)
-                {
-                  Console.WriteLine(state.ToString());
-                }
             }
         }
     }
 
+    // Writes the latitude and longitude data of zip codes listed in zips.txt to a file
     public static void LatLong(zipCodeList codes)
     {
         var zips = File.ReadAllLines("zips.txt");
@@ -139,6 +131,8 @@ public class Hw4
 
         WriteToFile("LatLon.txt", latLonData);
     }
+
+    // Entry point of the program
     public static void Main(string[] args)
     {
         // Capture the start time
@@ -157,7 +151,6 @@ public class Hw4
         LatLong(codes);
         CityStates(codes);
         
-
         // ============================
         // Do not add or change anything below, inside the 
         // Main method
@@ -173,11 +166,9 @@ public class Hw4
         Console.WriteLine($"Elapsed Time: {elapsedTime.TotalMilliseconds} ms");
     }
 
+    // Writes data to a file
     public static void WriteToFile(string fileName, IEnumerable<string> data)
     {
-        Console.WriteLine("writing to file");
         File.WriteAllLines(fileName, data);
     }
-
-    
 }

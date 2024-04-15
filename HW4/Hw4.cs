@@ -13,6 +13,14 @@
   // => Used Pointers from lines 10 to 15 <=
   // => Used Pointers from lines 40 to 63 <=
 
+/* This code was assisted by ChatGPT, an AI language model developed by OpenAI.
+  Specific help from ChatGPT includes:
+    * fixing compilation and runtime errors
+    * help with lambda and LINQ functions
+    * comment generation
+  */
+
+
 
 using System;
 using System.IO;
@@ -94,6 +102,31 @@ public class Hw4
         WriteToFile("CommonCityNames.txt", commonCityNames);
     }
 
+    public static void CityStates(zipCodeList codes)
+    {
+        var cities = File.ReadAllLines("cities.txt").ToList();
+
+        using (StreamWriter writer = new StreamWriter("CityStates.txt"))
+        {
+            foreach (var city in cities)
+            {
+                Console.WriteLine(city);
+                var states = codes
+                    .Where(z => z.City == city)
+                    .Select(z => z.State)
+                    .Distinct()
+                    .OrderBy(s => s);
+
+                writer.WriteLine(string.Join(" ", states));
+
+                foreach (var state in states)
+                {
+                  Console.WriteLine(state.ToString());
+                }
+            }
+        }
+    }
+
     public static void LatLong(zipCodeList codes)
     {
         var zips = File.ReadAllLines("zips.txt");
@@ -120,8 +153,9 @@ public class Hw4
         parseCodes(ref codes);
         Console.WriteLine(codes[2].ToString());
         Console.WriteLine(codes.Count);
-        // commonCities(codes);
+        commonCities(codes);
         LatLong(codes);
+        CityStates(codes);
         
 
         // ============================

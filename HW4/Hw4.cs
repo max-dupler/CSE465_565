@@ -145,8 +145,6 @@ public class Hw4
 
         zipCodeList codes = new zipCodeList();
         parseCodes(ref codes);
-        Console.WriteLine(codes[2].ToString());
-        Console.WriteLine(codes.Count);
         commonCities(codes);
         LatLong(codes);
         CityStates(codes);

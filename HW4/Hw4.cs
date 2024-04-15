@@ -51,6 +51,7 @@ public class Zipcode
 
 public class Hw4
 {
+    public delegate void WriteToFileFunc(string fileName, IEnumerable<string> data);
     public static void parseCodes(ref zipCodeList codes) 
     {
         var lines = File.ReadAllLines("zipcodes.txt"); 
@@ -64,6 +65,39 @@ public class Hw4
               continue;
           }
         }
+    }
+
+    public static void commonCities(zipCodeList codes)
+    {
+        Console.WriteLine("Starting Common Cities");
+        var states = File.ReadAllLines("states.txt");
+        foreach (var state in states) 
+        {
+          Console.WriteLine(state);
+        }
+        var cityGroups = codes.GroupBy(z => z.City);
+        Console.WriteLine("grouped by city");
+
+        var commonCityNames = new List<string>();
+
+        foreach (var cityGroup in cityGroups)
+        {
+            bool cityExistsInAllStates = states.All(s => 
+                codes.Any(z => z.State == s && z.City == cityGroup.Key)
+            );
+
+            if (cityExistsInAllStates)
+            {
+                commonCityNames.Add(cityGroup.Key);
+                // Console.WriteLine("add");
+            }
+        }
+        commonCityNames.Sort();
+        Console.WriteLine("sorted");
+
+        Console.WriteLine("done filtering");
+        
+        WriteToFile("CommonCityNames.txt", commonCityNames);
     }
     public static void Main(string[] args)
     {
@@ -79,6 +113,7 @@ public class Hw4
         parseCodes(ref codes);
         Console.WriteLine(codes[2].ToString());
         Console.WriteLine(codes.Count);
+        commonCities(codes);
         
 
         // ============================
@@ -94,6 +129,12 @@ public class Hw4
         
         // Display the elapsed time in milliseconds
         Console.WriteLine($"Elapsed Time: {elapsedTime.TotalMilliseconds} ms");
+    }
+
+    public static void WriteToFile(string fileName, IEnumerable<string> data)
+    {
+        Console.WriteLine("writing to file");
+        File.WriteAllLines(fileName, data);
     }
 
     

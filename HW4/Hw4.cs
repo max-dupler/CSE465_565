@@ -69,14 +69,12 @@ public class Hw4
 
     public static void commonCities(zipCodeList codes)
     {
-        Console.WriteLine("Starting Common Cities");
         var states = File.ReadAllLines("states.txt");
         foreach (var state in states) 
         {
           Console.WriteLine(state);
         }
         var cityGroups = codes.GroupBy(z => z.City);
-        Console.WriteLine("grouped by city");
 
         var commonCityNames = new List<string>();
 
@@ -89,15 +87,24 @@ public class Hw4
             if (cityExistsInAllStates)
             {
                 commonCityNames.Add(cityGroup.Key);
-                // Console.WriteLine("add");
             }
         }
         commonCityNames.Sort();
-        Console.WriteLine("sorted");
-
-        Console.WriteLine("done filtering");
         
         WriteToFile("CommonCityNames.txt", commonCityNames);
+    }
+
+    public static void LatLong(zipCodeList codes)
+    {
+        var zips = File.ReadAllLines("zips.txt");
+        var zipList = zips.Select(int.Parse).ToList();
+        var latLonData = codes
+            .Where(z => zipList.Contains(z.ZipcodeValue))
+            .GroupBy(z => z.ZipcodeValue)
+            .Select(g => $"{g.First().Latitude} {g.First().Longitude}")
+            .ToList();
+
+        WriteToFile("LatLon.txt", latLonData);
     }
     public static void Main(string[] args)
     {
@@ -113,7 +120,8 @@ public class Hw4
         parseCodes(ref codes);
         Console.WriteLine(codes[2].ToString());
         Console.WriteLine(codes.Count);
-        commonCities(codes);
+        // commonCities(codes);
+        LatLong(codes);
         
 
         // ============================

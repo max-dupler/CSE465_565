@@ -105,20 +105,25 @@ public class Hw4
     // Writes the states corresponding to each city listed in cities.txt to a file
     public static void CityStates(zipCodeList codes)
     {
+        Dict cityStates = new Dict();
         var cities = File.ReadAllLines("cities.txt").ToList();
+
+        foreach (var city in cities)
+        {
+            cityStates[city.Trim().ToLower()] = new Set();
+        }
+
+        foreach (Zipcode z in codes)
+            {
+                if (cityStates.ContainsKey(z.City))
+                {
+                    cityStates[z.City.Trim().ToLower()].Add(z.State);
+                }
+            }
 
         using (StreamWriter writer = new StreamWriter("CityStates.txt"))
         {
-            foreach (var city in cities)
-            {
-                var states = codes
-                    .Where(z => z.City == city)
-                    .Select(z => z.State)
-                    .Distinct()
-                    .OrderBy(s => s);
-
-                writer.WriteLine(string.Join(" ", states));
-            }
+            foreach (state in cityStates)
         }
     }
 

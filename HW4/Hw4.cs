@@ -25,6 +25,8 @@ using System.IO;
 using System.Collections.Generic;
 using zipCodeList = System.Collections.Generic.List<Zipcode>;
 using System.Linq;
+using Dict = System.Collections.Generic.Dictionary<string, System.Collections.Generic.HashSet<string>>;
+using Set = System.Collections.Generic.HashSet<string>;
 
 public class Zipcode
 {
@@ -77,25 +79,27 @@ public class Hw4
     // Finds common cities that appear in all states and writes them to a file
     public static void commonCities(zipCodeList codes)
     {
+        Dict stateDict = new Dict();
         var states = File.ReadAllLines("states.txt");
-        var cityGroups = codes.GroupBy(z => z.City);
 
-        var commonCityNames = new List<string>();
-
-        foreach (var cityGroup in cityGroups)
-        {
-            bool cityExistsInAllStates = states.All(s => 
-                codes.Any(z => z.State == s && z.City == cityGroup.Key)
-            );
-
-            if (cityExistsInAllStates)
-            {
-                commonCityNames.Add(cityGroup.Key);
-            }
+        foreach (string state in states) {
+            stateDict[state.Trim()] = new Set();
         }
-        commonCityNames.Sort();
+
+        foreach (Zipcode z in codes)
+        {
+            if (stateDict.ContainsKey(z.State)) {
+                    stateDict[z.State].Add(z.City);
+                }
+        }
+        var commonCities = stateDict.Values
+            .Skip(1)
+            .Aggregate(
+                new Set(stateDict.Values.First()),
+                (h, e) => { h.IntersectWith(e); return h; }
+            );
+        File.WriteAllLines("CommonCityNames.txt", commonCities.OrderBy(x => x));
         
-        WriteToFile("CommonCityNames.txt", commonCityNames);
     }
 
     // Writes the states corresponding to each city listed in cities.txt to a file

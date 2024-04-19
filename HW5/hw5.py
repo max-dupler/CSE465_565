@@ -1,9 +1,10 @@
 import time
+from zipcode import Zipcode as zc
 
 """
   Homework#5
 
-  Add your name here: ----
+  Add your name here: Max Dupler
 
   You are free to create as many classes within the hw5.py file or across 
   multiple files as you need. However, ensure that the hw5.py file is the 
@@ -20,7 +21,7 @@ if __name__ == "__main__":
     '''
 
     
-    # write your code here
+    
 
 
     '''

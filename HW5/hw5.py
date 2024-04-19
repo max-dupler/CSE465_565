@@ -11,7 +11,7 @@ iii. Override a method. This does not have to be a part of your solution.
 ○ Filter. This must be a part of your solution.
 ○ List Comprehension. This must be a part of your solution.
 ○ Proper use of Data Structures from python library. This must be a part of your solution.
-○ Variable Positional Argument. This must be a part of your solution.
+○ Variable Positional Argument. This must be a part of your solution. DONE
 ○ Yield. Does not have to be a part of your solution.
 '''
 import time
@@ -40,8 +40,8 @@ if __name__ == "__main__":
     code2 = ZC(12345, "Oxford", "OH", 1.4567, 4.5667)
     code3 = ZC(12390, "Oxford", "OH", 1.4567, 4.5667)
     print(code)
-    print(code.__eq__(code2))
-    print(code.__eq__(code3))
+    print(code == code2)
+    print(code == code3)
 
 
     '''

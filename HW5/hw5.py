@@ -1,5 +1,21 @@
+'''
+Requirements:
+Use of Object-Oriented Programming :
+i. Design a logical and practical hierarchy of classes with at least one superclass
+and a subclass. This must be a part of your solution.
+ii. Override an operator, which could be either a logical operator, or a
+mathematical operator. This does not have to be a part of your solution.
+iii. Override a method. This does not have to be a part of your solution.
+○ Lambda. This must be a part of your solution.
+○ Map. This must be a part of your solution.
+○ Filter. This must be a part of your solution.
+○ List Comprehension. This must be a part of your solution.
+○ Proper use of Data Structures from python library. This must be a part of your solution.
+○ Variable Positional Argument. This must be a part of your solution.
+○ Yield. Does not have to be a part of your solution.
+'''
 import time
-from zipcode import Zipcode as zc
+from zipcode import Zipcode as ZC
 
 """
   Homework#5
@@ -20,8 +36,12 @@ if __name__ == "__main__":
     -----------------------------------------------------------
     '''
 
-    
-    
+    code = ZC(12345, "Oxford", "OH", 1.4567, 4.5667)
+    code2 = ZC(12345, "Oxford", "OH", 1.4567, 4.5667)
+    code3 = ZC(12390, "Oxford", "OH", 1.4567, 4.5667)
+    print(code)
+    print(code.__eq__(code2))
+    print(code.__eq__(code3))
 
 
     '''

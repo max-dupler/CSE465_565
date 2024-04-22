@@ -20,6 +20,23 @@ from zipcode import Zipcode as ZC
   because your instructor will run the hw5.py file to execute and evaluate 
   your work.
 """
+
+def getCommonCities(codes):
+    stateDict = dict()
+    # get state names into a dict with each state name declared as a key
+    # each key has a set that will be populated with city names
+    with open("states.txt", "r") as stateInput:
+        stateDict.update({line.strip(): set() for line in stateInput})
+    
+    # add all city names from a state into its set in the dictionary
+    for code in codes:
+        stateDict[code.state].add(code.city) if code.state in stateDict else None
+    
+    # get a list of values from each state
+    cities = list(stateDict.values())
+    # filter to find common cities
+    commonCities = list(filter(lambda x : x in cities[0], cities[1]))
+    print(len(commonCities))
     
 def createZipCode(line):
     toks = line.strip().split('\t')
@@ -44,6 +61,7 @@ if __name__ == "__main__":
     codesLst = parseCodes()
     print(len(codesLst))
     print(codesLst[1])
+    getCommonCities(codesLst)
 
     # code = ZC(12345, "Oxford", "OH", 1.4567, 4.5667)
     # code2 = ZC(12345, "Oxford", "OH", 1.4567, 4.5667)

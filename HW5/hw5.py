@@ -1,8 +1,6 @@
 '''
 Requirements:
 Use of Object-Oriented Programming :
-○ Lambda. This must be a part of your solution. 
-○ Filter. This must be a part of your solution.
 ○ Proper use of Data Structures from python library. This must be a part of your solution.
 ○ Yield. Does not have to be a part of your solution.
 '''
@@ -21,6 +19,12 @@ from zipcode import Zipcode as ZC
   your work.
 """
 
+def commonCities(codes):
+    with open("CommonCityNames.txt", "w") as outputStream:
+        for city in getCommonCities(codes):
+            outputStream.write(str(city) + "\n")
+
+
 def getCommonCities(codes):
     stateDict = dict()
     # get state names into a dict with each state name declared as a key
@@ -35,8 +39,10 @@ def getCommonCities(codes):
     # get a list of values from each state
     cities = list(stateDict.values())
     # filter to find common cities
-    commonCities = list(filter(lambda x : x in cities[0], cities[1]))
-    print(len(commonCities))
+    commonCities = sorted(list(filter(lambda x : x in cities[0], cities[1])))
+    
+    for city in commonCities:
+        yield city
     
 def createZipCode(line):
     toks = line.strip().split('\t')
@@ -59,9 +65,7 @@ if __name__ == "__main__":
     '''
 
     codesLst = parseCodes()
-    print(len(codesLst))
-    print(codesLst[1])
-    getCommonCities(codesLst)
+    commonCities(codesLst)
 
     # code = ZC(12345, "Oxford", "OH", 1.4567, 4.5667)
     # code2 = ZC(12345, "Oxford", "OH", 1.4567, 4.5667)

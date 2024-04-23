@@ -1,7 +1,16 @@
 '''
-Requirements:
-Use of Object-Oriented Programming :
+○ Use of Object-Oriented Programming :
+i. Design a logical and practical hierarchy of classes with at least one superclass
+and a subclass. This must be a part of your solution.
+ii. Override an operator, which could be either a logical operator, or a
+mathematical operator. This does not have to be a part of your solution.
+iii. Override a method. This does not have to be a part of your solution.
+○ Lambda. This must be a part of your solution. 
+○ Map. This must be a part of your solution.
+○ Filter. This must be a part of your solution.
+○ List Comprehension. This must be a part of your solution.
 ○ Proper use of Data Structures from python library. This must be a part of your solution.
+○ Variable Positional Argument. This must be a part of your solution.
 ○ Yield. Does not have to be a part of your solution.
 '''
 import time
@@ -18,6 +27,16 @@ from zipcode import Zipcode as ZC
   because your instructor will run the hw5.py file to execute and evaluate 
   your work.
 """
+
+def latLon(codes):
+    zips = list()
+    with open("zips.txt", "r") as zipStream:
+        for line in zipStream:
+            zips.append(line.strip())
+    
+    for zip in zips:
+        code = list((filter(lambda x : x.code == zip, codes)))
+        print(code[0].lat + " " + code[0].lon) 
 
 def commonCities(codes):
     with open("CommonCityNames.txt", "w") as outputStream:
@@ -66,14 +85,7 @@ if __name__ == "__main__":
 
     codesLst = parseCodes()
     commonCities(codesLst)
-
-    # code = ZC(12345, "Oxford", "OH", 1.4567, 4.5667)
-    # code2 = ZC(12345, "Oxford", "OH", 1.4567, 4.5667)
-    # code3 = ZC(12390, "Oxford", "OH", 1.4567, 4.5667)
-    # print(code)
-    # print(code == code2)
-    # print(code == code3)
-
+    latLon(codesLst)
 
     '''
     Inside the __main__, do not add any codes after this line.

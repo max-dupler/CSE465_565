@@ -1,20 +1,5 @@
-'''
-○ Use of Object-Oriented Programming :
-i. Design a logical and practical hierarchy of classes with at least one superclass
-and a subclass. This must be a part of your solution.
-ii. Override an operator, which could be either a logical operator, or a
-mathematical operator. This does not have to be a part of your solution.
-iii. Override a method. This does not have to be a part of your solution.
-○ Lambda. This must be a part of your solution. 
-○ Map. This must be a part of your solution.
-○ Filter. This must be a part of your solution.
-○ List Comprehension. This must be a part of your solution.
-○ Proper use of Data Structures from python library. This must be a part of your solution.
-○ Variable Positional Argument. This must be a part of your solution.
-○ Yield. Does not have to be a part of your solution.
-'''
-import time
-from zipcode import Zipcode as ZC
+import time  # Importing the time module for performance measurement
+from zipcode import Zipcode as ZC  # Importing the Zipcode class from zipcode.py as ZC
 
 """
   Homework#5
@@ -26,8 +11,16 @@ from zipcode import Zipcode as ZC
   only one that contains a __main__ method. This specific setup is crucial 
   because your instructor will run the hw5.py file to execute and evaluate 
   your work.
+
+  This code was assisted by ChatGPT, an AI language model developed by OpenAI.
+  Specific help from ChatGPT includes:
+    * fixing compilation and runtime errors
+    * help with list comprehension
+    * comment generation
+    * improving runtime
 """
 
+# Function to write city states to a file
 def cityStates(codes):
     cities = list()
     with open("cities.txt", "r") as file:
@@ -39,7 +32,7 @@ def cityStates(codes):
             states = sorted(set(code.state for code in codes if code.city.lower() == city.lower()))
             outputStream.write(" ".join(states) + "\n")
 
-
+# Function to write latitude and longitude to a file
 def latLon(codes):
     zips = list()
     with open("zips.txt", "r") as zipStream:
@@ -51,12 +44,13 @@ def latLon(codes):
             code = list((filter(lambda x : x.code == zip, codes)))
             latLonStream.write(f"{code[0].lat} {code[0].lon}\n")
 
+# Function to write common city names to a file
 def commonCities(codes):
     with open("CommonCityNames.txt", "w") as outputStream:
         for city in getCommonCities(codes):
             outputStream.write(str(city) + "\n")
 
-
+# Generator function to find common cities
 def getCommonCities(codes):
     stateDict = dict()
     # get state names into a dict with each state name declared as a key
@@ -75,7 +69,8 @@ def getCommonCities(codes):
     
     for city in commonCities:
         yield city
-    
+
+# Function to create a Zipcode object from a line of text
 def createZipCode(line):
     toks = line.strip().split('\t')
     try:
@@ -84,30 +79,25 @@ def createZipCode(line):
     except Exception:
         return None
 
+# Function to parse codes from a file
 def parseCodes():
     inputStream = open("zipcodes.txt", "r")
     return list(map(createZipCode, inputStream))
 
-
+# Main block of code
 if __name__ == "__main__": 
-    start_time = time.perf_counter()  # Do not remove this line
-    '''
-    Inisde the __main__, do not add any codes before this line.
-    -----------------------------------------------------------
-    '''
+    start_time = time.perf_counter()  # Start measuring program runtime
+    
+    codesLst = parseCodes()  # Parse codes from file
+    commonCities(codesLst)   # Write common city names to file
+    latLon(codesLst)         # Write latitude and longitude to file
+    cityStates(codesLst)     # Write city states to file
 
-    codesLst = parseCodes()
-    commonCities(codesLst)
-    latLon(codesLst)
-    cityStates(codesLst)
-
-    '''
-    Inside the __main__, do not add any codes after this line.
-    ----------------------------------------------------------
-    '''
-    end_time = time.perf_counter()
+    end_time = time.perf_counter()  # Stop measuring program runtime
     # Calculate the runtime in milliseconds
     runtime_ms = (end_time - start_time) * 1000
-    print(f"The runtime of the program is {runtime_ms} milliseconds.")  
+    print(f"The runtime of the program is {runtime_ms} milliseconds.")  # Print program runtime
+
+
     
 

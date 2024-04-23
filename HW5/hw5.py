@@ -36,41 +36,41 @@ def city_states(codes):
 # Function to write latitude and longitude to a file
 def lat_lon(codes):
     zips = list()
-    with open("zips.txt", "r") as zipStream:
-        for line in zipStream:
+    with open("zips.txt", "r") as zip_stream:
+        for line in zip_stream:
             zips.append(line.strip())
     
-    with open("LatLon.txt", "w") as latLonStream:
+    with open("LatLon.txt", "w") as lat_lon_stream:
         for zip in zips:
             code = list((filter(lambda x : x.code == zip, codes)))
-            latLonStream.write(f"{code[0].lat} {code[0].lon}\n")
+            lat_lon_stream.write(f"{code[0].lat} {code[0].lon}\n")
 
 # Function to write common city names to a file
 def common_cities(codes):
-    with open("CommonCityNames.txt", "w") as outputStream:
+    with open("CommonCityNames.txt", "w") as output_stream:
         for city in get_common_cities(codes):
-            outputStream.write(str(city) + "\n")
+            output_stream.write(str(city) + "\n")
 
 # Generator function to find common cities
 def get_common_cities(codes):
-    stateDict = dict()
+    state_dict = dict()
 
     # get state names into a dict with each state name declared as a key
     # each key has a set that will be populated with city names
-    with open("states.txt", "r") as stateInput:
-        stateDict.update({line.strip(): set() for line in stateInput})
+    with open("states.txt", "r") as state_input:
+        state_dict.update({line.strip(): set() for line in state_input})
     
     # add all city names from a state into its set in the dictionary
     for code in codes:
-        stateDict[code.state].add(code.city) if code.state in stateDict else None
+        state_dict[code.state].add(code.city) if code.state in state_dict else None
     
     # get a list of values from each state
-    cities = list(stateDict.values())
+    cities = list(state_dict.values())
 
     # filter to find common cities
-    commonCities = sorted(list(filter(lambda x : x in cities[0], cities[1])))
+    common_cities = sorted(list(filter(lambda x : x in cities[0], cities[1])))
     
-    for city in commonCities:
+    for city in common_cities:
         yield city
 
 # Function to create a Zipcode object from a line of text
@@ -84,20 +84,17 @@ def create_zip_code(line):
 
 # Function to parse codes from a file
 def parse_codes():
-    inputStream = open("zipcodes.txt", "r")
-    return list(map(create_zip_code, inputStream))
+    input_stream = open("zipcodes.txt", "r")
+    return list(map(create_zip_code, input_stream))
 
 # Main block of code
 if __name__ == "__main__": 
     start_time = time.perf_counter()  # Start measuring program runtime
     
-    codesLst = parse_codes()
-
-    # create threads for each different operation
-
-    common_cities(codesLst)
-    lat_lon(codesLst)
-    city_states(codesLst)
+    codes = parse_codes()
+    common_cities(codes)
+    lat_lon(codes)
+    city_states(codes)
 
     end_time = time.perf_counter()  # Stop measuring program runtime
     # Calculate the runtime in milliseconds

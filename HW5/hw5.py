@@ -1,5 +1,6 @@
 import time 
 import threading
+import concurrent.futures
 from zipcode import Zipcode as ZC 
 
 """
@@ -92,9 +93,12 @@ if __name__ == "__main__":
     start_time = time.perf_counter()  # Start measuring program runtime
     
     codes = parse_codes()
-    common_cities(codes)
-    lat_lon(codes)
-    city_states(codes)
+
+    # create separate threads for each function
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        executor.submit(city_states, codes)
+        executor.submit(lat_lon, codes)
+        executor.submit(common_cities, codes)
 
     end_time = time.perf_counter()  # Stop measuring program runtime
     # Calculate the runtime in milliseconds

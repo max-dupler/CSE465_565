@@ -34,9 +34,10 @@ def latLon(codes):
         for line in zipStream:
             zips.append(line.strip())
     
-    for zip in zips:
-        code = list((filter(lambda x : x.code == zip, codes)))
-        print(code[0].lat + " " + code[0].lon) 
+    with open("LatLon.txt", "w") as latLonStream:
+        for zip in zips:
+            code = list((filter(lambda x : x.code == zip, codes)))
+            latLonStream.write(f"{code[0].lat} {code[0].lon}\n")
 
 def commonCities(codes):
     with open("CommonCityNames.txt", "w") as outputStream:

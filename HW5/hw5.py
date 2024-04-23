@@ -28,6 +28,18 @@ from zipcode import Zipcode as ZC
   your work.
 """
 
+def cityStates(codes):
+    cities = list()
+    with open("cities.txt", "r") as file:
+        for line in file:
+            cities.append(line.strip())
+    
+    with open("CityStates.txt", "w") as outputStream:
+        for city in cities:
+            states = sorted(set(code.state for code in codes if code.city.lower() == city.lower()))
+            outputStream.write(" ".join(states) + "\n")
+
+
 def latLon(codes):
     zips = list()
     with open("zips.txt", "r") as zipStream:
@@ -87,6 +99,7 @@ if __name__ == "__main__":
     codesLst = parseCodes()
     commonCities(codesLst)
     latLon(codesLst)
+    cityStates(codesLst)
 
     '''
     Inside the __main__, do not add any codes after this line.

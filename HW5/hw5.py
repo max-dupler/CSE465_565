@@ -1,5 +1,6 @@
-import time  # Importing the time module for performance measurement
-from zipcode import Zipcode as ZC  # Importing the Zipcode class from zipcode.py as ZC
+import time 
+import threading
+from zipcode import Zipcode as ZC 
 
 """
   Homework#5
@@ -21,7 +22,7 @@ from zipcode import Zipcode as ZC  # Importing the Zipcode class from zipcode.py
 """
 
 # Function to write city states to a file
-def cityStates(codes):
+def city_states(codes):
     cities = list()
     with open("cities.txt", "r") as file:
         for line in file:
@@ -33,7 +34,7 @@ def cityStates(codes):
             outputStream.write(" ".join(states) + "\n")
 
 # Function to write latitude and longitude to a file
-def latLon(codes):
+def lat_lon(codes):
     zips = list()
     with open("zips.txt", "r") as zipStream:
         for line in zipStream:
@@ -45,14 +46,15 @@ def latLon(codes):
             latLonStream.write(f"{code[0].lat} {code[0].lon}\n")
 
 # Function to write common city names to a file
-def commonCities(codes):
+def common_cities(codes):
     with open("CommonCityNames.txt", "w") as outputStream:
-        for city in getCommonCities(codes):
+        for city in get_common_cities(codes):
             outputStream.write(str(city) + "\n")
 
 # Generator function to find common cities
-def getCommonCities(codes):
+def get_common_cities(codes):
     stateDict = dict()
+
     # get state names into a dict with each state name declared as a key
     # each key has a set that will be populated with city names
     with open("states.txt", "r") as stateInput:
@@ -64,6 +66,7 @@ def getCommonCities(codes):
     
     # get a list of values from each state
     cities = list(stateDict.values())
+
     # filter to find common cities
     commonCities = sorted(list(filter(lambda x : x in cities[0], cities[1])))
     
@@ -71,7 +74,7 @@ def getCommonCities(codes):
         yield city
 
 # Function to create a Zipcode object from a line of text
-def createZipCode(line):
+def create_zip_code(line):
     toks = line.strip().split('\t')
     try:
         code = ZC(toks[1], toks[3], toks[4], toks[6], toks[7])
@@ -80,18 +83,21 @@ def createZipCode(line):
         return None
 
 # Function to parse codes from a file
-def parseCodes():
+def parse_codes():
     inputStream = open("zipcodes.txt", "r")
-    return list(map(createZipCode, inputStream))
+    return list(map(create_zip_code, inputStream))
 
 # Main block of code
 if __name__ == "__main__": 
     start_time = time.perf_counter()  # Start measuring program runtime
     
-    codesLst = parseCodes()  # Parse codes from file
-    commonCities(codesLst)   # Write common city names to file
-    latLon(codesLst)         # Write latitude and longitude to file
-    cityStates(codesLst)     # Write city states to file
+    codesLst = parse_codes()
+
+    # create threads for each different operation
+
+    common_cities(codesLst)
+    lat_lon(codesLst)
+    city_states(codesLst)
 
     end_time = time.perf_counter()  # Stop measuring program runtime
     # Calculate the runtime in milliseconds

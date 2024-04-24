@@ -1,5 +1,4 @@
 import time 
-import concurrent.futures
 from zipcode import Zipcode as ZC 
 
 """
@@ -94,10 +93,9 @@ def create_zip_code(line):
     except Exception:
         return None
 
-# Function to parse codes from a file
 def parse_codes():
-    input_stream = open("zipcodes.txt", "r")
-    return list(map(create_zip_code, input_stream))
+    with open("zipcodes.txt", "r") as input_stream:
+        yield from (create_zip_code(line) for line in input_stream)
 
 # Main block of code
 if __name__ == "__main__": 

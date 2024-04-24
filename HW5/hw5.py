@@ -46,15 +46,16 @@ def city_states(codes):
 
 # Function to write latitude and longitude to a file
 def lat_lon(codes):
-    zips = list()
-    with open("zips.txt", "r") as zip_stream:
-        for line in zip_stream:
-            zips.append(line.strip())
+    # Create a dictionary for faster lookup
+    codes_dict = {code.code: code for code in codes}
     
-    with open("LatLon.txt", "w") as lat_lon_stream:
-        for zip in zips:
-            code = list((filter(lambda x : x.code == zip, codes)))
-            lat_lon_stream.write(f"{code[0].lat} {code[0].lon}\n")
+    with open("zips.txt", "r") as zip_stream, open("LatLon.txt", "w") as lat_lon_stream:
+        for line in zip_stream:
+            zip_code = line.strip()
+            if zip_code in codes_dict:
+                code = codes_dict[zip_code]
+                lat_lon_stream.write(f"{code.lat} {code.lon}\n")
+
 
 # Function to write common city names to a file
 def common_cities(codes):
@@ -103,18 +104,9 @@ if __name__ == "__main__":
     start_time = time.perf_counter()  # Start measuring program runtime
 
     codes = parse_codes()
-
-    # city_states(codes)
-    # lat_lon(codes)
-    # common_cities(codes)
-    
-
-    # create separate threads for each function
-    # this will increase the speed by allowing each method to be run concurrently
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        executor.submit(city_states, codes)
-        executor.submit(lat_lon, codes)
-        executor.submit(common_cities, codes)
+    city_states(codes)
+    lat_lon(codes)
+    common_cities(codes)
 
     end_time = time.perf_counter()  # Stop measuring program runtime
     # Calculate the runtime in milliseconds

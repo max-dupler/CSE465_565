@@ -1,17 +1,13 @@
 # Define the Location class
 class Location:
-    def __init__(self, **args):
-        # Initialize attributes based on keyword arguments
-        self.city = args.get("city")
-        self.state = args.get("state")
-        self.lat = args.get("lat")
-        self.lon = args.get("lon") 
+    def __init__(self, *args):
+        self.city, self.state, self.lat, self.lon = args
 
 # Define the Zipcode class, inheriting from Location
 class Zipcode(Location):
     def __init__(self, code, city, state, lat, lon):
         # Call the superclass constructor with specified keyword arguments
-        super().__init__(city=city, state=state, lat=lat, lon=lon)
+        super().__init__(city, state, lat, lon)
         self.code = code
 
     # Override the equality operator

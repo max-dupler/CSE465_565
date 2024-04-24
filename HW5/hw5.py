@@ -101,7 +101,7 @@ def parse_codes():
 if __name__ == "__main__": 
     start_time = time.perf_counter()  # Start measuring program runtime
 
-    codes = parse_codes()
+    codes = list(parse_codes())
     city_states(codes)
     lat_lon(codes)
     common_cities(codes)

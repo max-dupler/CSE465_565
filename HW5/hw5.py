@@ -1,5 +1,4 @@
 import time 
-import threading
 import concurrent.futures
 from zipcode import Zipcode as ZC 
 
@@ -24,15 +23,26 @@ from zipcode import Zipcode as ZC
 
 # Function to write city states to a file
 def city_states(codes):
-    cities = list()
+    city_states_dict = {}
+    
+    # Initialize city_states_dict with cities from the file
     with open("cities.txt", "r") as file:
         for line in file:
-            cities.append(line.strip())
+            city = line.strip().lower()  # Convert city to lowercase
+            city_states_dict[city] = set()  # Initialize empty set for each city
     
-    with open("CityStates.txt", "w") as outputStream:
-        for city in cities:
-            states = sorted(set(code.state for code in codes if code.city.lower() == city.lower()))
-            outputStream.write(" ".join(states) + "\n")
+    # Populate city_states_dict with states for each city
+    for code in codes:
+        city = code.city.lower()  # Convert city to lowercase
+        if city in city_states_dict:
+            city_states_dict[city].add(code.state)
+    
+    # Write city states to the output file
+    with open("CityStates.txt", "w") as output_stream:
+        for city, states in city_states_dict.items():
+            output_stream.write(" ".join(sorted(states)) + "\n")
+
+
 
 # Function to write latitude and longitude to a file
 def lat_lon(codes):
@@ -91,10 +101,16 @@ def parse_codes():
 # Main block of code
 if __name__ == "__main__": 
     start_time = time.perf_counter()  # Start measuring program runtime
-    
+
     codes = parse_codes()
 
+    # city_states(codes)
+    # lat_lon(codes)
+    # common_cities(codes)
+    
+
     # create separate threads for each function
+    # this will increase the speed by allowing each method to be run concurrently
     with concurrent.futures.ThreadPoolExecutor() as executor:
         executor.submit(city_states, codes)
         executor.submit(lat_lon, codes)

@@ -20,6 +20,8 @@ from zipcode import Zipcode as ZC
     * improving runtime
 """
 
+# => I’m competing for BONUS Points <=
+
 # Function to write city states to a file
 def city_states(codes):
     city_states_dict = {}

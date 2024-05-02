@@ -1,25 +1,53 @@
 // Copyright 2024 <Max Dupler>
 #include <iostream>
-#include <fstream>
 #include <unordered_map>
-#include <any>
+#include <regex>
+#include <fstream>
 #include <vector>
-#include <sstream>
 
 
 using std::string, std::cout, std::endl, std::cerr;
 
-std::vector<string> tokenize(const string line) {
-    std::vector<string> tokens;
-    std::istringstream sReader(line);
-    string token;
+class Interpreter {
+    const string fileName;
+    const std::unordered_map<string, std::regex> tokenSpecification = {
+        {"INT_VAR", std::regex("[a-zA-Z_][a-zA-Z_0-9]*\\s")},
+        {"STR_VAR", std::regex("[a-zA-Z_][a-zA-Z_0-9]*\\s")},
+        {"ASSIGN", std::regex("(?<=\\s)\\=(?=\\s)")},
+        {"PLUS_ASSIGN", std::regex("(?<=\\s)\\+=(?=\\s)")},
+        {"MINUS_ASSIGN", std::regex("(?<=\\s)-=(?=\\s)")},
+        {"MULT_ASSIGN", std::regex("(?<=\\s)\\*=(?=\\s)")},
+        {"INT_VAR_VAL", std::regex("(?<=\\+=|-=|\\*=)\\s[a-zA-Z_][a-zA-Z_0-9]*")},
+        {"STR_VAR_VAL", std::regex("(?<=\\+=)\\s[a-zA-Z_][a-zA-Z_0-9]*")},
+        {"NUMBER", std::regex("(?<=\\s)-?\\d+(?=\\s)")},
+        {"STRING", std::regex("\"[^\"]*\"")},
+        {"SEMICOLON", std::regex("(?<=\\s);")},
+        {"WS", std::regex("\\s+")},
+        {"NEWLN", std::regex("\\n")}
+    };
+    std::unordered_map<string, string> variables;
+    int lineNum = 0;
 
-    while(std::getline(sReader, token, ' ')) {
-        tokens.push_back(token);
+    std::vector<std::pair<std::string, std::string>> lexicalAnalysis(const std::string& line) {
+        std::vector<std::pair<std::string, std::string>> tokens;
+
+        for (const auto& [tokType, tokRegex] : tokenSpecification) {
+            int pos = 0;
+            std::smatch match;
+
+            while (std::regex_search(line.substr(pos), match, tokRegex)) {
+                if (tokType != "WS" && tokType != "NEWLN") {
+                    tokens.emplace_back(tokType, match[0].str());
+                    if (tokType == "INT_VAR" || tokType == "STR_VAR")
+                        break;
+                }
+                pos += match.position() + match.length();
+            }
+        }
+        return tokens;
     }
-
-    return tokens;
-}
+    
+};
 
 int main(int argc, char* argv[]) {
     // check if arguments are correct
@@ -35,15 +63,5 @@ int main(int argc, char* argv[]) {
         cerr << "File does not exist or has an error" << endl;
     }
 
-    string line;
-    while (std::getline(fReader, line)) {
-        if (!line.empty()) {
-            std::vector<string> tokens = tokenize(line);
-            for (const string token : tokens) {
-                cout << token << " ";
-            }
-        }
-        cout << endl;
-    }
     return 0;
 }

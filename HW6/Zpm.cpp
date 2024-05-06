@@ -6,45 +6,41 @@
 #include <vector>
 
 
-using std::string, std::cout, std::endl, std::cerr;
+using std::string;
+using std::cout;
+using std::endl;
+using std::cerr;
+using std::pair;
+using std::vector;
 
 class Interpreter {
+public:
     const string fileName;
-    const std::unordered_map<string, std::regex> tokenSpecification = {
-        {"INT_VAR", std::regex("[a-zA-Z_][a-zA-Z_0-9]*\\s")},
-        {"STR_VAR", std::regex("[a-zA-Z_][a-zA-Z_0-9]*\\s")},
-        {"ASSIGN", std::regex("(?<=\\s)\\=(?=\\s)")},
-        {"PLUS_ASSIGN", std::regex("(?<=\\s)\\+=(?=\\s)")},
-        {"MINUS_ASSIGN", std::regex("(?<=\\s)-=(?=\\s)")},
-        {"MULT_ASSIGN", std::regex("(?<=\\s)\\*=(?=\\s)")},
-        {"INT_VAR_VAL", std::regex("(?<=\\+=|-=|\\*=)\\s[a-zA-Z_][a-zA-Z_0-9]*")},
-        {"STR_VAR_VAL", std::regex("(?<=\\+=)\\s[a-zA-Z_][a-zA-Z_0-9]*")},
-        {"NUMBER", std::regex("(?<=\\s)-?\\d+(?=\\s)")},
-        {"STRING", std::regex("\"[^\"]*\"")},
-        {"SEMICOLON", std::regex("(?<=\\s);")},
-        {"WS", std::regex("\\s+")},
-        {"NEWLN", std::regex("\\n")}
+    const vector<pair<string, string>> TOKEN_SPECIFICATION = {
+        {"INT_VAR",     "[a-zA-Z_][a-zA-Z_0-9]*\\s"},
+        {"STR_VAR",     "[a-zA-Z_][a-zA-Z_0-9]*\\s"},
+        {"ASSIGN",      "(?<=\\s)\\=(?=\\s)"},
+        {"PLUS_ASSIGN", "(?<=\\s)\\+=(?=\\s)"},
+        {"MINUS_ASSIGN","(?<=\\s)-=(?=\\s)"},
+        {"MULT_ASSIGN", "(?<=\\s)\\*=(?=\\s)"},
+        {"INT_VAR_VAL", "(?<=\\+=|-=|\\*=)\\s[a-zA-Z_][a-zA-Z_0-9]*"},
+        {"STR_VAR_VAL", "(?<=\\+=)\\s[a-zA-Z_][a-zA-Z_0-9]*"},
+        {"NUMBER",      "(?<=\\s)-?\\d+(?=\\s)"},
+        {"STRING",      "\"[^\"]*\""},
+        {"SEMICOLON",   "(?<=\\s);"},
+        {"WS",          "\\s+"},
+        {"NEWLN",       "\\n"}
     };
     std::unordered_map<string, string> variables;
     int lineNum = 0;
 
-    std::vector<std::pair<std::string, std::string>> lexicalAnalysis(const std::string& line) {
-        std::vector<std::pair<std::string, std::string>> tokens;
-
-        for (const auto& [tokType, tokRegex] : tokenSpecification) {
-            int pos = 0;
-            std::smatch match;
-
-            while (std::regex_search(line.substr(pos), match, tokRegex)) {
-                if (tokType != "WS" && tokType != "NEWLN") {
-                    tokens.emplace_back(tokType, match[0].str());
-                    if (tokType == "INT_VAR" || tokType == "STR_VAR")
-                        break;
-                }
-                pos += match.position() + match.length();
-            }
-        }
+    vector<pair<string, string>> lexicalAnalysis(const string& line){
+        vector<pair<string, string>> tokens;
         return tokens;
+    }
+
+    void parse(const vector<pair<string, string>> & tokens) {
+        return;
     }
     
 };
@@ -61,6 +57,7 @@ int main(int argc, char* argv[]) {
     std::ifstream fReader = std::ifstream(fName);
     if (!fReader.good()) {
         cerr << "File does not exist or has an error" << endl;
+        return 0;
     }
 
     return 0;

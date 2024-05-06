@@ -124,6 +124,7 @@
     "functional": "cpp",
     "memory_resource": "cpp",
     "random": "cpp",
-    "stop_token": "cpp"
+    "stop_token": "cpp",
+    "regex": "cpp"
   }
 }

@@ -125,6 +125,7 @@
     "memory_resource": "cpp",
     "random": "cpp",
     "stop_token": "cpp",
-    "regex": "cpp"
+    "regex": "cpp",
+    "span": "cpp"
   }
 }

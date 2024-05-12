@@ -126,6 +126,12 @@
     "random": "cpp",
     "stop_token": "cpp",
     "regex": "cpp",
-    "span": "cpp"
+    "span": "cpp",
+    "__hash_table": "cpp",
+    "__node_handle": "cpp",
+    "cmath": "cpp",
+    "iomanip": "cpp",
+    "optional": "cpp",
+    "stack": "cpp"
   }
 }

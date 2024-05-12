@@ -17,13 +17,40 @@ private:
         std::vector<std::string> tokens;
         std::istringstream iss(line);
         std::string token;
-        while (iss >> token) {
-            tokens.push_back(token);
+        char c;
+        bool inQuotes = false;
+        std::string currentToken;
+
+        while (iss.get(c)) {
+            if (c == '"' && !inQuotes) {
+                inQuotes = true;
+                currentToken += c;
+            } else if (c == '"' && inQuotes) {
+                inQuotes = false;
+                currentToken += c;
+            } else if (c == ' ' && !inQuotes) {
+                if (!currentToken.empty()) {
+                    tokens.push_back(currentToken);
+                    currentToken.clear();
+                }
+            } else {
+                currentToken += c;
+            }
         }
+
+        if (!currentToken.empty()) {
+            tokens.push_back(currentToken);
+        }
+
         return tokens;
     }
 
     static std::string parseValue(const std::string& value) {
+        auto it = variables.find(value);
+        if (it != variables.end()) {
+            return variables.at(value);
+        }
+
         try {
             std::size_t pos;
             int parsedValue = std::stoi(value, &pos);
@@ -35,7 +62,11 @@ private:
                 } else {
                     auto it = variables.find(value);
                     if (it != variables.end()) {
-                        return it->second;
+                        std::string variableValue = it->second;
+                        if (variableValue != value) {
+                            return parseValue(variableValue);
+                        }
+                        return variableValue;
                     }
                 }
             }
@@ -44,6 +75,17 @@ private:
         }
         return value;
     }
+
+    static bool isNumeric(const std::string& value) {
+    try {
+        std::stoi(value);
+        return true;
+    } catch (const std::exception&) {
+        // Catch any exceptions that occur during conversion
+        return false;
+    }
+}
+
 
 public:
 
@@ -72,6 +114,10 @@ public:
         std::string operation = parts[1];
         std::string value = parts[2];
 
+        if (value.front() == '"' && value.back() == '"') {
+            value = value.substr(1, value.size() - 2);
+        }
+
         if (operation == "=") {
             variables[variable] = parseValue(value);
         } else {
@@ -81,35 +127,48 @@ public:
             }
             std::string currentValue = it->second;
             std::string parsedValue = parseValue(value);
+            int currentInt;
+            int parsedInt;
+            bool isInt = false;
+            if (isNumeric(currentValue) && isNumeric(parsedValue)) {
+                currentInt = std::stoi(currentValue);
+                parsedInt = std::stoi(parsedValue);
+                isInt = true;
+            }
             if (operation == "+=") {
-                if (variables.find(parsedValue) != variables.end()) {
-                    parsedValue = variables[parsedValue];
+                if (isInt) {
+                    currentInt += parsedInt;
+                } else {
+                    currentValue += parsedValue;
                 }
-                currentValue += parsedValue;
             } else if (operation == "-=") {
-                if (variables.find(parsedValue) != variables.end()) {
-                    parsedValue = variables[parsedValue];
+                if (isInt) {
+                    currentInt -= parsedInt;
                 }
-                currentValue.erase(currentValue.find(parsedValue), parsedValue.length());
             } else if (operation == "*=") {
-                if (variables.find(parsedValue) != variables.end()) {
-                    parsedValue = variables[parsedValue];
+                if (isInt) {
+                    currentInt *= parsedInt;
                 }
-                currentValue += parsedValue;
             } else {
                 throw std::runtime_error("Syntax Error: Invalid operation");
             }
-            variables[variable] = currentValue;
+            if (isInt) {
+                variables[variable] = std::to_string(currentInt);
+            } else {
+                variables[variable] = currentValue;
+            }
         }
     }
 
-    static void forLoop(const std::vector<std::string>& parts, int lineNum) {
-        int numLoops = std::stoi(parts[1]);
 
+
+    static void forLoop(const std::vector<std::string>& parts, int lineNum) {
+        int numLoops = std::stoi(parseValue(parts[1]));
         for (int i = 0; i < numLoops; i++) {
             std::string statement;
             for (std::size_t j = 2; j < parts.size(); j++) {
                 if (parts[j] == ";") {
+                    statement += ";";
                     interpret(statement, lineNum);
                     statement.clear();
                 } else if (parts[j] == "ENDFOR") {
@@ -130,7 +189,11 @@ public:
         if (it == variables.end()) {
             throw std::runtime_error("Runtime Error");
         } else {
-            std::cout << variable << "=" << it->second << std::endl;
+            if (!isNumeric(it->second)) {
+                std::cout << variable << "=\"" << it->second << "\"" << std::endl;
+            } else {
+                std::cout << variable << "=" << it->second << std::endl;
+            }
         }
     }
 
@@ -155,7 +218,8 @@ public:
             try {
                 interpret(line, lineNum);
             } catch (const std::exception& e) {
-                std::cerr << "Error: Line " << lineNum << std::endl;
+                std::cerr << "RUNTIME ERROR: line " << lineNum << std::endl;
+                std::cerr << e.what() << std::endl;
                 return 1;
             }
         }

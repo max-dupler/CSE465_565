@@ -1,7 +1,6 @@
 // Copyright 2024 <Max Dupler>
 // parts of this program were assisted by ChatGPT
 
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -9,10 +8,11 @@
 #include <unordered_map>
 
 class Zpm {
-private:
+ private:
     // Map to store variables and their values
     static std::unordered_map<std::string, std::string> variables;
 
+    // Function to tokenize a line, considering quotes as one token
     static std::vector<std::string> tokenize(const std::string& line) {
         std::vector<std::string> tokens;
         std::istringstream iss(line);
@@ -44,6 +44,7 @@ private:
         return tokens;
     }
 
+    // Function to parse variable values
     static std::string parseValue(const std::string& value) {
         auto it = variables.find(value);
         if (it != variables.end()) {
@@ -56,7 +57,8 @@ private:
             if (pos == value.size()) {
                 return std::to_string(parsedValue);
             } else {
-                if (value.front() == '"' && value.back() == '"' && value.size() >= 2) {
+                if (value.front() == '"' && value.back() == '"'
+                    && value.size() >= 2) {
                     return value.substr(1, value.size() - 2);
                 } else {
                     auto it = variables.find(value);
@@ -75,19 +77,19 @@ private:
         return value;
     }
 
+    // Function to check if a value is numeric
     static bool isNumeric(const std::string& value) {
         try {
             std::stoi(value);
             return true;
         } catch (const std::exception&) {
-            // Catch any exceptions that occur during conversion
             return false;
         }
     }
 
 
-public:
-
+ public:
+    // Interpret function to process each line of the Zpm code
     static void interpret(const std::string& line, int lineNum) {
         if (line.empty()) {
             return;
@@ -95,7 +97,8 @@ public:
 
         std::vector<std::string> parts = tokenize(line);
         // Check for syntax errors
-        if (parts.size() < 3 || (parts.back() != ";" && parts.back() != "ENDFOR")) {
+        if (parts.size() < 3 || (parts.back() != ";"
+            && parts.back() != "ENDFOR")) {
             throw std::runtime_error("Syntax Error");
         }
         if (parts[0] == "PRINT") {
@@ -107,12 +110,13 @@ public:
         }
     }
 
-
+    // Function to handle variable assignments
     static void assignment(const std::vector<std::string>& parts, int lineNum) {
         std::string variable = parts[0];
         std::string operation = parts[1];
         std::string value = parts[2];
 
+        // Remove quotes from value if present
         if (value.front() == '"' && value.back() == '"') {
             value = value.substr(1, value.size() - 2);
         }
@@ -135,7 +139,7 @@ public:
             }
             if (isInt && isNumeric(parsedValue)) {
                 parsedInt = std::stoi(parsedValue);
-            } else if(isInt || isNumeric(parsedValue)) {
+            } else if (isInt || isNumeric(parsedValue)) {
                 throw std::runtime_error("cannot add string and int");
             }
             if (operation == "+=") {
@@ -163,8 +167,7 @@ public:
         }
     }
 
-
-
+    // Function to handle FOR loops
     static void forLoop(const std::vector<std::string>& parts, int lineNum) {
         int numLoops = std::stoi(parseValue(parts[1]));
         for (int i = 0; i < numLoops; i++) {
@@ -187,19 +190,22 @@ public:
         }
     }
 
+    // Function to print variable values
     static void printVariables(const std::string& variable, int lineNum) {
         auto it = variables.find(variable);
         if (it == variables.end()) {
             throw std::runtime_error("Runtime Error");
         } else {
             if (!isNumeric(it->second)) {
-                std::cout << variable << "=\"" << it->second << "\"" << std::endl;
+                std::cout << variable << "=\"" << it->second << "\""
+                    << std::endl;
             } else {
                 std::cout << variable << "=" << it->second << std::endl;
             }
         }
     }
 
+    // Main function to execute the Zpm program
     static int main(int argc, char* argv[]) {
         if (argc < 2) {
             std::cerr << "Usage: ./Zpm <filename.zpm>" << std::endl;

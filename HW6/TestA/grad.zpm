@@ -1,7 +1,7 @@
 str = "a" ;
 A = 10 ;
 FOR 3 str += "A" ; FOR 2 str += "-" ; str += "-" ; ENDFOR A += 1 ; A -= 1 ; ENDFOR
-PRINT str ; "aA----A----
+PRINT str ;
 PRINT A ;
 
 num = 2 ;

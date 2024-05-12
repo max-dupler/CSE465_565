@@ -37,7 +37,6 @@ private:
                 currentToken += c;
             }
         }
-
         if (!currentToken.empty()) {
             tokens.push_back(currentToken);
         }
@@ -77,14 +76,14 @@ private:
     }
 
     static bool isNumeric(const std::string& value) {
-    try {
-        std::stoi(value);
-        return true;
-    } catch (const std::exception&) {
-        // Catch any exceptions that occur during conversion
-        return false;
+        try {
+            std::stoi(value);
+            return true;
+        } catch (const std::exception&) {
+            // Catch any exceptions that occur during conversion
+            return false;
+        }
     }
-}
 
 
 public:
@@ -130,10 +129,14 @@ public:
             int currentInt;
             int parsedInt;
             bool isInt = false;
-            if (isNumeric(currentValue) && isNumeric(parsedValue)) {
+            if (isNumeric(currentValue)) {
                 currentInt = std::stoi(currentValue);
-                parsedInt = std::stoi(parsedValue);
                 isInt = true;
+            }
+            if (isInt && isNumeric(parsedValue)) {
+                parsedInt = std::stoi(parsedValue);
+            } else if(isInt || isNumeric(parsedValue)) {
+                throw std::runtime_error("cannot add string and int");
             }
             if (operation == "+=") {
                 if (isInt) {
@@ -219,7 +222,6 @@ public:
                 interpret(line, lineNum);
             } catch (const std::exception& e) {
                 std::cerr << "RUNTIME ERROR: line " << lineNum << std::endl;
-                std::cerr << e.what() << std::endl;
                 return 1;
             }
         }

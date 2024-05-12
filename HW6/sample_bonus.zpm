@@ -1,5 +1,5 @@
 
-N = 100000 ;
+N = 10000 ;
 
 FOR N s = "*" ; s += s ; result = 1 ; result += 2 ; result *= 2 ; result -= 2 ; ENDFOR
 
